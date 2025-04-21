@@ -22,6 +22,11 @@ ALLOWED_HOSTS = []  # ajuste conforme necessário
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks',
+    'acessos',
+    'usuarios',
+    'vendas',
+    'comissoes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +50,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,3 +120,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ao acessar uma view protegida sem autenticação, redireciona aqui
+LOGIN_URL = 'acessos:login'    
+
+# após login bem‑sucedido, vai para o dashboard (definiremos depois)
+LOGIN_REDIRECT_URL = 'dashboard'  
+LOGOUT_REDIRECT_URL = 'acessos:login'
