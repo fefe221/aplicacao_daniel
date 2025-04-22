@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Apagar Usuário – Corema{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning">
+  Tem certeza que deseja apagar o usuário <strong>{{ object.username }}</strong>?
+</div>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Sim, apagar</button>
+  <a href="{% url 'usuarios:list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

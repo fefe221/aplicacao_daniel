@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'acessos',
     'usuarios',
     'vendas',
-    'comissoes',
+    'comissoes.apps.ComissoesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,5 +126,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'acessos:login'    
 
 # após login bem‑sucedido, vai para o dashboard (definiremos depois)
-LOGIN_REDIRECT_URL = 'dashboard'  
+LOGIN_REDIRECT_URL = 'acessos:home'  
 LOGOUT_REDIRECT_URL = 'acessos:login'
+
+# Aponta para o nosso CustomUser
+AUTH_USER_MODEL = 'usuarios.CustomUser'

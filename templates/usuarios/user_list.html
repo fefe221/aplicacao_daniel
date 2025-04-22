@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Usuários – Corema{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Usuários</h2>
+  <a href="{% url 'usuarios:add' %}" class="btn btn-success">Novo Usuário</a>
+</div>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Usuário</th><th>Nome</th><th>Email</th><th>Ativo</th><th>Indicador</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.get_full_name }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.is_active|yesno:"Sim,Não" }}</td>
+        <td>{{ u.referral_parent }}</td>
+        <td>
+          <a href="{% url 'usuarios:edit' u.pk %}" class="btn btn-sm btn-primary">Editar</a>
+          <a href="{% url 'usuarios:delete' u.pk %}" class="btn btn-sm btn-danger">Apagar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="text-center">Nenhum usuário cadastrado.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

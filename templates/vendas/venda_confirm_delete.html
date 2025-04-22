@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Apagar Venda – Corema{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning">
+  Tem certeza que deseja apagar a venda
+  <strong>{{ object.descricao }}</strong>?
+</div>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Sim, apagar</button>
+  <a href="{% url 'vendas:list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

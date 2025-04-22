@@ -1,0 +1,157 @@
+{# templates/comissoes/report.html #}
+{% extends 'base.html' %}
+{% block title %}Minhas Comissões – Corema{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Minhas Comissões</h2>
+  <a href="{% url 'acessos:home' %}" class="btn btn-secondary">Voltar</a>
+</div>
+
+<form method="get" class="row g-3 mb-4 align-items-end">
+  <div class="col-auto">
+    <label for="start_date" class="form-label">Data Início</label>
+    <input type="date" id="start_date" name="start_date"
+           class="form-control" value="{{ start_date }}">
+  </div>
+  <div class="col-auto">
+    <label for="end_date" class="form-label">Data Fim</label>
+    <input type="date" id="end_date" name="end_date"
+           class="form-control" value="{{ end_date }}">
+  </div>
+  <div class="col-auto">
+    <label for="per_page" class="form-label">Por página</label>
+    <select id="per_page" name="per_page" class="form-select">
+      {% for n in per_page_options %}
+        <option value="{{ n }}" {% if per_page == n %}selected{% endif %}>
+          {{ n }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary">Filtrar</button>
+    <a href="{% url 'comissoes:report' %}" class="btn btn-link">Limpar</a>
+  </div>
+</form>
+
+{# === Resumo de Comissões (paginado) === #}
+{% if summary %}
+  <h4>Resumo por Usuário</h4>
+  <table class="table table-sm mb-2">
+    <thead>
+      <tr><th>Usuário</th><th>Total (R$)</th></tr>
+    </thead>
+    <tbody>
+      {% for s in summary %}
+        <tr>
+          <td>{{ s.earner__username }}</td>
+          <td>R$ {{ s.total }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if summary_page_obj.has_other_pages %}
+  <nav aria-label="Páginas do resumo">
+    <ul class="pagination pagination-sm">
+      {% if summary_page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link"
+             href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&summary_page={{ summary_page_obj.previous_page_number }}">
+            «
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">«</span></li>
+      {% endif %}
+      {% for num in summary_page_obj.paginator.page_range %}
+        <li class="page-item {% if num == summary_page_obj.number %}active{% endif %}">
+          <a class="page-link"
+             href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&summary_page={{ num }}">
+            {{ num }}
+          </a>
+        </li>
+      {% endfor %}
+      {% if summary_page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link"
+             href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&summary_page={{ summary_page_obj.next_page_number }}">
+            »
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">»</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+{% endif %}
+
+<hr>
+
+{# === Listagem detalhada de entradas (continua igual) === #}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Venda</th>
+      <th>Dono da Comissão</th>
+      <th>Nível</th>
+      <th>Valor (R$)</th>
+      <th>Gerado em</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in entries %}
+      <tr>
+        <td>{{ c.venda.descricao }}</td>
+        <td>{{ c.earner.username }}</td>
+        <td>{{ c.level }}</td>
+        <td>R$ {{ c.amount }}</td>
+        <td>{{ c.created_at|date:"d/m/Y H:i" }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">
+          Nenhuma comissão encontrada neste período.
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="Páginas de entradas">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&page={{ page_obj.previous_page_number }}">
+          Anterior
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+      <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+        <a class="page-link"
+           href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&page={{ num }}">
+          {{ num }}
+        </a>
+      </li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?start_date={{ start_date }}&end_date={{ end_date }}&per_page={{ per_page }}&page={{ page_obj.next_page_number }}">
+          Próxima
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Próxima</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}
