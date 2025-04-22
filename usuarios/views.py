@@ -1,23 +1,32 @@
 from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView
-)
+from django.db.models import Q
 from .models import CustomUser
-from django import forms
-
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'referral_parent']
-        widgets = {
-            'referral_parent': forms.Select(attrs={'class': 'form-select'}),
-        }
+from .forms import UserForm
 
 class UserListView(LoginRequiredMixin, ListView):
     model = CustomUser
     template_name = 'usuarios/user_list.html'
     context_object_name = 'users'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = super().get_queryset().order_by('username')
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(username__icontains=q) |
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q) |
+                Q(email__icontains=q)
+            )
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['q'] = self.request.GET.get('q', '')
+        return ctx
 
 class UserCreateView(LoginRequiredMixin, CreateView):
     model = CustomUser

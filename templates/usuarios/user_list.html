@@ -1,33 +1,101 @@
-{% extends 'base.html' %}
-{% block title %}Usuários – Corema{% endblock %}
+{% extends "base.html" %}
+{% block title %}Usuários{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2>Usuários</h2>
-  <a href="{% url 'usuarios:add' %}" class="btn btn-success">Novo Usuário</a>
-</div>
-<table class="table table-striped table-hover">
-  <thead>
-    <tr>
-      <th>Usuário</th><th>Nome</th><th>Email</th><th>Ativo</th><th>Indicador</th><th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for u in users %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Usuários</h1>
+    <a href="{% url 'usuarios:create' %}" class="btn btn-primary">
+      Novo Usuário
+    </a>
+  </div>
+
+  {# Barra de pesquisa #}
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-auto">
+      <input
+        type="text"
+        name="q"
+        value="{{ request.GET.q|default_if_none:'' }}"
+        class="form-control"
+        placeholder="Buscar por username, nome ou email…"
+      >
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-secondary">
+        Buscar
+      </button>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'usuarios:list' %}" class="btn btn-link">Limpar</a>
+    </div>
+  </form>
+
+  <table class="table table-hover">
+    <thead class="table-light">
       <tr>
-        <td>{{ u.username }}</td>
-        <td>{{ u.get_full_name }}</td>
-        <td>{{ u.email }}</td>
-        <td>{{ u.is_active|yesno:"Sim,Não" }}</td>
-        <td>{{ u.referral_parent }}</td>
-        <td>
-          <a href="{% url 'usuarios:edit' u.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <a href="{% url 'usuarios:delete' u.pk %}" class="btn btn-sm btn-danger">Apagar</a>
-        </td>
+        <th>Username</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Ações</th>
       </tr>
-    {% empty %}
-      <tr><td colspan="6" class="text-center">Nenhum usuário cadastrado.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for user in page_obj %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.get_full_name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <a href="{% url 'usuarios:update' user.pk %}"
+               class="btn btn-sm btn-secondary">
+              Editar
+            </a>
+            <a href="{% url 'usuarios:delete' user.pk %}"
+               class="btn btn-sm btn-danger">
+              Excluir
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">Nenhum usuário encontrado.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# Paginação #}
+  {% if page_obj.has_other_pages %}
+    <nav aria-label="Paginação usuários">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">
+              «
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">«</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+            <a class="page-link" href="?q={{ request.GET.q }}&page={{ num }}">
+              {{ num }}
+            </a>
+          </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">
+              »
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">»</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% endblock %}
