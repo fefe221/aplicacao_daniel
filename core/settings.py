@@ -131,3 +131,13 @@ LOGOUT_REDIRECT_URL = 'acessos:login'
 
 # Aponta para o nosso CustomUser
 AUTH_USER_MODEL = 'usuarios.CustomUser'
+
+from django.contrib.messages import constants as msg
+
+MESSAGE_TAGS = {
+  msg.DEBUG: 'secondary',
+  msg.INFO: 'info',
+  msg.SUCCESS: 'success',
+  msg.WARNING: 'warning',
+  msg.ERROR: 'danger',
+}
