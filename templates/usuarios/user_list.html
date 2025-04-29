@@ -9,7 +9,6 @@
     </a>
   </div>
 
-  {# Barra de pesquisa #}
   <form method="get" class="row g-2 mb-4">
     <div class="col-auto">
       <input
@@ -36,6 +35,7 @@
         <th>Username</th>
         <th>Nome</th>
         <th>Email</th>
+        <th>Indicado por</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -45,26 +45,20 @@
           <td>{{ user.username }}</td>
           <td>{{ user.get_full_name }}</td>
           <td>{{ user.email }}</td>
+          <td>{{ user.referral_parent.get_full_name|default:"-" }}</td>
           <td>
-            <a href="{% url 'usuarios:update' user.pk %}"
-               class="btn btn-sm btn-secondary">
-              Editar
-            </a>
-            <a href="{% url 'usuarios:delete' user.pk %}"
-               class="btn btn-sm btn-danger">
-              Excluir
-            </a>
+            <a href="{% url 'usuarios:update' user.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+            <a href="{% url 'usuarios:delete' user.pk %}" class="btn btn-sm btn-danger">Excluir</a>
           </td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="4">Nenhum usuário encontrado.</td>
+          <td colspan="5">Nenhum usuário encontrado.</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  {# Paginação #}
   {% if page_obj.has_other_pages %}
     <nav aria-label="Paginação usuários">
       <ul class="pagination">
