@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Auditoria{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Auditoria de Ações</h1>
+
+  <form method="get" class="mb-3 row">
+    <div class="col-md-4">
+      <input type="text" name="usuario" class="form-control" placeholder="Usuário" value="{{ usuario }}">
+    </div>
+    <div class="col-md-4">
+      <input type="date" name="data" class="form-control" value="{{ data }}">
+    </div>
+    <div class="col-md-4">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+  </form>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Data/Hora</th>
+        <th>Usuário</th>
+        <th>Ação</th>
+        <th>Método</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for registro in registros %}
+      <tr>
+        <td>{{ registro.data_hora|date:"d/m/Y H:i:s" }}</td>
+        <td>{{ registro.usuario }}</td>
+        <td>{{ registro.acao }}</td>
+        <td>{{ registro.metodo }}</td>
+        <td>{{ registro.caminho }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">Nenhum registro encontrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

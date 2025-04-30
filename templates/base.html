@@ -72,6 +72,9 @@
               <a class="nav-link" href="{% url 'arvore:minha_rede' %}">Minha Rede</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'auditoria:list' %}">Histórico de Alterações</a>
+            </li>
+            <li class="nav-item">
               <form method="post" action="{% url 'acessos:logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-link nav-link">
