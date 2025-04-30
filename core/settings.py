@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'usuarios',
     'vendas',
     'comissoes.apps.ComissoesConfig',
+    'arvore',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from .models import CustomUser
-from .forms import UserForm
+from .forms import UserForm, UserUpdateForm
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -42,7 +42,7 @@ class UserCreateView(LoginRequiredMixin, CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    form_class = UserForm
+    form_class = UserUpdateForm
     template_name = 'usuarios/user_form.html'
     success_url = reverse_lazy('usuarios:list')
 
